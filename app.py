@@ -2,8 +2,10 @@
 
 import os
 
-from flask import Flask, render_template
+
+from flask import Flask, render_template, flash
 from flask_debugtoolbar import DebugToolbarExtension
+from forms import AddPetForm
 
 from models import connect_db, Pet, db
 
@@ -29,4 +31,21 @@ def show_home_page():
     return render_template("home-page.html", pets=pets)
 
 
+@app.route('/add', methods=["GET","POST"])
+def add_pet():
 
+    form = AddPetForm()
+
+    if form.validate_on_submit():
+        name = form.pet_name.data
+        species = form.pet_species.data
+        photo_url = form.pet_photo_url.data
+        age = form.pet_age.data
+        notes = form.pet_notes.data
+
+        flash(f"Sucessfully added {name}")
+
+        return redirect("/")
+
+    else:
+        return render_template("add-pet-form.html", form = form)

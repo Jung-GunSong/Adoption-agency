@@ -1,6 +1,8 @@
 """Models for adopt app."""
 
 from flask_sqlalchemy import SQLAlchemy
+from flask_wtf import FlaskForm
+from wtforms import StringField, FloatField, SelectField, TextAreaField
 
 db = SQLAlchemy()
 
@@ -57,3 +59,4 @@ class Pet(db.Model):
         nullable = False,
         default = True
     )
+
