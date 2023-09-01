@@ -3,7 +3,7 @@
 import os
 
 
-from flask import Flask, render_template, flash
+from flask import Flask, render_template, flash, redirect
 from flask_debugtoolbar import DebugToolbarExtension
 from forms import AddPetForm
 
@@ -15,6 +15,8 @@ app.config['SECRET_KEY'] = "secret"
 
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
     "DATABASE_URL", "postgresql:///adopt")
+
+app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 
 connect_db(app)
 
@@ -42,6 +44,11 @@ def add_pet():
         photo_url = form.pet_photo_url.data
         age = form.pet_age.data
         notes = form.pet_notes.data
+
+        pet = Pet(name=name, species=species, photo_url=photo_url,
+                  age=age, notes=notes)
+        db.session.add(pet)
+        db.session.commit()
 
         flash(f"Sucessfully added {name}")
 

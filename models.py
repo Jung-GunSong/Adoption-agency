@@ -45,7 +45,7 @@ class Pet(db.Model):
 
     age = db.Column(
         db.Text,
-        db.CheckConstraint("age in ('baby', 'young', 'adult', 'senior')"),
+        #db.CheckConstraint("age in ('baby', 'young', 'adult', 'senior')"),
         nullable = False,
     )
 
