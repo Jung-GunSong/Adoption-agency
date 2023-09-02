@@ -11,6 +11,10 @@
     {% if pet.available %}
     <p><b>Available</b></p>
     {% endif %}
+    <form action="/{{ pet.id }}" method="GET">
+      <button>Edit Pet</button>
+    </form>
+
   </li>
 {% endfor %}
 </ul>

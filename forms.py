@@ -2,8 +2,8 @@
 
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
-from wtforms import StringField, FloatField, SelectField, TextAreaField, validators
-from wtforms.validators import InputRequired, Optional, Email, AnyOf, URL
+from wtforms import StringField, SelectField, TextAreaField, validators
+from wtforms.validators import InputRequired, Optional, AnyOf, URL
 
 db = SQLAlchemy()
 
@@ -18,25 +18,26 @@ def connect_db(app):
     db.app = app
     db.init_app(app)
 
-class AddPetForm(FlaskForm):
 
-    pet_name = StringField("Pet Name", validators=[InputRequired()])
+class PetForm(FlaskForm):
+    """creates forms to either add or edit pets"""
+    name = StringField("Pet Name", validators=[InputRequired()])
 
-    pet_species = StringField("Enter Species",
-                              validators=[InputRequired(),
-                                            AnyOf(['cat', 'dog', 'porcupine'])])
+    species = StringField("Enter Species",
+                          validators=[InputRequired(),
+                                      AnyOf(['CAT', 'DOG', 'PORCUPINE'])])
 
-    pet_photo_url = StringField("Pet Photo Url", validators=[Optional(),
-                                                             URL()])
+    photo_url = StringField("Pet Photo Url", validators=[Optional(),
+                                                         URL()])
 
-    pet_age = SelectField("Pet Age", choices = [('baby', 'Baby'),
-                                                ('young', 'Young'),
-                                                 ('adult', 'Adult'),
-                                                 ('senior', 'Senior')],
-                                                 validators=[InputRequired(),
-                                                             AnyOf(['baby',
-                                                                    'young',
-                                                                    'adult',
-                                                                    'senior'])])
+    age = SelectField("Pet Age", choices=[('baby', 'Baby'),
+                                          ('young', 'Young'),
+                                          ('adult', 'Adult'),
+                                          ('senior', 'Senior')],
+                      validators=[InputRequired(),
+                                  AnyOf(['baby',
+                                         'young',
+                                         'adult',
+                                         'senior'])])
 
-    pet_notes = TextAreaField("Notes About The Pet", validators=[Optional()])
+    notes = TextAreaField("Notes About The Pet", validators=[Optional()])

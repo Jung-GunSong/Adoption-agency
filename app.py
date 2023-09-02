@@ -5,7 +5,7 @@ import os
 
 from flask import Flask, render_template, flash, redirect
 from flask_debugtoolbar import DebugToolbarExtension
-from forms import AddPetForm
+from forms import PetForm
 
 from models import connect_db, Pet, db
 
@@ -27,24 +27,32 @@ connect_db(app)
 
 toolbar = DebugToolbarExtension(app)
 
+
 @app.get('/')
 def show_home_page():
+    """homepage loads current pets"""
     pets = Pet.query.all()
     return render_template("home-page.html", pets=pets)
 
 
-@app.route('/add', methods=["GET","POST"])
+@app.route('/add', methods=["GET", "POST"])
 def add_pet():
-
-    form = AddPetForm()
+    """renders form to add a pet"""
+    form = PetForm()
 
     if form.validate_on_submit():
-        name = form.pet_name.data
-        species = form.pet_species.data
-        photo_url = form.pet_photo_url.data
-        age = form.pet_age.data
-        notes = form.pet_notes.data
+        # form.data.items return dictionary
+        # if key != csrf_token
 
+        name = form.name.data
+        species = form.species.data
+
+        # pet = Pet(**values) where dictionary has key-value pairs that are the same,
+
+        photo_url = form.photo_url.data
+        age = form.age.data
+        notes = form.notes.data
+        # print("type of species is", type(species))
         pet = Pet(name=name, species=species, photo_url=photo_url,
                   age=age, notes=notes)
         db.session.add(pet)
@@ -55,4 +63,28 @@ def add_pet():
         return redirect("/")
 
     else:
-        return render_template("add-pet-form.html", form = form)
+        return render_template("add-pet-form.html", form=form)
+
+
+@app.route('/<int:id>', methods=["GET", "POST"])
+def edit_pet(id):
+    """renders from to edit pet"""
+    edit_pet = Pet.query.get(id)
+
+    form = PetForm(obj=edit_pet)
+
+    if form.validate_on_submit():
+        edit_pet.name = form.name.data
+        edit_pet.species = form.species.data.upper()
+        edit_pet.photo_url = form.photo_url.data
+        edit_pet.age = form.age.data
+        edit_pet.notes = form.notes.data
+
+        db.session.commit()
+
+        flash(f"Successfully edited {edit_pet.name}")
+
+        return redirect("/")
+
+    else:
+        return render_template("edit-pet-form.html", form=form)
